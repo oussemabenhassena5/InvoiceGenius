@@ -5,30 +5,28 @@ from https://github.com/tiangolo/sqlmodel/issues/121#issuecomment-935656778
 Import the various model modules in one place and resolve forward refs.
 """
 
-
-# AccountOutputWithCustomer.update_forward_refs(CustomerOutput=CustomerOutput)
-# CustomerOutputWithAccounts.update_forward_refs(AccountOutput=AccountOutput)
-
-# from app.models.invoice_model import Invoice
-
-# Invoice.update_forward_refs()
-
 import pkgutil
 from pathlib import Path
 
+# Update these imports to use the correct module names
 from app.models.client_contact_model import ClientContact, ClientContactWithInvoices
 from app.models.invoice_contact_model import InvoiceContact, InvoiceContactWithInvoices
 from app.models.invoice_item_model import InvoiceItem
 from app.models.invoice_model import Invoice, InvoiceFull
 from app.models.note_model import Note, NoteWithInvoice
 
-InvoiceFull.update_forward_refs(
-    ClientContact=ClientContact, InvoiceContact=InvoiceContact, InvoiceItem=InvoiceItem, Note=Note
-)
+# Remove these duplicate imports as they're using incorrect paths
+# from .client_contact import ClientContact
+# from .invoice import InvoiceFull
+# from .invoice_contact import InvoiceContact
+# from .invoice_item import InvoiceItem
+# from .note import Note
 
-InvoiceContactWithInvoices.update_forward_refs(Invoice=Invoice)
-ClientContactWithInvoices.update_forward_refs(Invoice=Invoice)
-NoteWithInvoice.update_forward_refs(Invoice=Invoice)
+# Use model_rebuild() for Pydantic v2 compatibility
+InvoiceFull.model_rebuild()
+InvoiceContactWithInvoices.model_rebuild()
+ClientContactWithInvoices.model_rebuild()
+NoteWithInvoice.model_rebuild()
 
 
 def load_all_models() -> None:

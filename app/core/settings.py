@@ -1,6 +1,5 @@
 import enum
-
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings  # Updated import
 from yarl import URL
 
 # TEMP_DIR = Path(gettempdir())
@@ -49,6 +48,21 @@ class Settings(BaseSettings):
     db_pass: str = "root"
     db_base: str = "invoice_db"
     db_echo: bool = False
+
+    # Super Admin settings
+    super_admin_password: str = "12345678"
+
+    # Mail settings
+    mail_from_name: str = ""
+    mail_username: str = ""
+    mail_password: str = ""
+    mail_from: str = ""
+    mail_port: int = 587
+    mail_server: str = "smtp.gmail.com"
+    mail_starttls: bool = True
+    mail_ssl_tls: bool = False
+    mail_use_credentials: bool = True
+    mail_validate_certs: bool = True
 
     @property
     def db_url(self) -> URL:

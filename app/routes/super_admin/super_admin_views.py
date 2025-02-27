@@ -3,8 +3,10 @@ Super Admin is for managing top level DB operations like
 DB migration using alembic, dropping and creating new DB,
 insert initial data to all tables
 """
+
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings  # Updated import
+from pydantic import ConfigDict
 
 from app.models.client_contact_model import ClientContactInput
 from app.routes.client_contact.client_contact_dao import ClientContactDAO
@@ -56,12 +58,11 @@ class SuperAdminConfig(BaseSettings):
     with environment variables.
     """
 
-    # super_admin_username: str = ""
     super_admin_password: str = ""
 
-    class Config:
-        env_file = "envs/dev.env"
-        env_file_encoding = "utf-8"
+    model_config = ConfigDict(
+        extra="allow", env_file="envs/dev.env", env_file_encoding="utf-8"  # Allow extra fields from env file
+    )
 
 
 super_admin_config = SuperAdminConfig()

@@ -161,11 +161,9 @@ cython_debug/
 
 **/.vscode
 .DS_Store
-*.env
 **/media/*
 
 z_things
 
-!envs/*example.env
-envs/*.env
 dev.env
+

@@ -1,7 +1,7 @@
 import enum
 from pydantic_settings import BaseSettings  # Updated import
 from yarl import URL
-from typing import Literal
+from typing import Literal, Optional
 from pydantic import ConfigDict
 
 # TEMP_DIR = Path(gettempdir())
@@ -15,6 +15,11 @@ class LogLevel(str, enum.Enum):
     INFO = "INFO"
     WARNING = "WARNING"
     ERROR = "FATAL"
+
+
+class DocumentIntelligenceSettings(BaseSettings):
+    api_key: str = ""
+    endpoint: str = ""
 
 
 class Settings(BaseSettings):
@@ -61,6 +66,12 @@ class Settings(BaseSettings):
     mail_ssl_tls: bool = False
     mail_use_credentials: bool = True
     mail_validate_certs: bool = True
+
+    # Azure settings
+    azure_api_key: Optional[str] = None
+    azure_url: Optional[str] = None
+    azure_api_version: Optional[str] = None
+    document_intelligence: DocumentIntelligenceSettings = DocumentIntelligenceSettings()
 
     @property
     def db_url(self) -> URL:

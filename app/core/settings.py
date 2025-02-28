@@ -1,6 +1,8 @@
 import enum
 from pydantic_settings import BaseSettings  # Updated import
 from yarl import URL
+from typing import Literal
+from pydantic import ConfigDict
 
 # TEMP_DIR = Path(gettempdir())
 
@@ -12,8 +14,7 @@ class LogLevel(str, enum.Enum):
     DEBUG = "DEBUG"
     INFO = "INFO"
     WARNING = "WARNING"
-    ERROR = "ERROR"
-    FATAL = "FATAL"
+    ERROR = "FATAL"
 
 
 class Settings(BaseSettings):
@@ -24,24 +25,21 @@ class Settings(BaseSettings):
     with environment variables.
     """
 
-    app_name: str = ""
-    app_desc: str = ""
+    # Add better defaults and descriptions
+    app_name: str = "InvoiceGenius"  # Changed from empty string
+    app_desc: str = "Invoice Management API"  # Changed from empty string
 
-    # host: str = "192.168.1.237"
     host: str = "0.0.0.0"
     port: int = 8000
-    # quantity of workers for uvicorn
     workers_count: int = 1
-    # Enable uvicorn reloading
     reload: bool = False
 
-    # Current environment
-    environment: str = "dev"
-
+    # Added type hints and better defaults
+    environment: Literal["dev", "prod", "test"] = "dev"
     log_level: LogLevel = LogLevel.INFO
 
-    # Variables for the database
-    db_type: str = "mysql"
+    # Database settings with better naming
+    db_type: Literal["mysql", "postgres"] = "mysql"
     db_host: str = "localhost"
     db_port: int = 3306
     db_user: str = "root"
@@ -84,9 +82,8 @@ class Settings(BaseSettings):
         print("Generated DB URL ::", generated_url)
         return generated_url
 
-    class Config:
-        env_file = "envs/dev.env"
-        env_file_encoding = "utf-8"
+    # Added model config
+    model_config = ConfigDict(env_file="envs/dev.env", env_file_encoding="utf-8")
 
 
 settings = Settings()

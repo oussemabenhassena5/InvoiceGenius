@@ -2,6 +2,7 @@
 This file can perform deleting and creating new database at same time
 Currently Postgres and MySQL Database supported
 """
+
 from sqlalchemy import text
 from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import create_async_engine
@@ -10,22 +11,23 @@ from app.core.settings import settings
 
 
 async def create_database(drop_db_if_exist: bool = False) -> None:
-    """Create a databse."""
+    """Create a database."""
 
     is_postgres_db: bool = settings.db_type == "postgres"
 
-    db_url = (
-        make_url(str(settings.db_url.with_path("/postgres"))) if is_postgres_db else make_url(str(settings.db_url))
-    )
+    # Convert URL to string when creating engine
+    db_url = str(settings.db_url.with_path(""))  # Add str() here
 
     engine = create_async_engine(db_url, isolation_level="AUTOCOMMIT")
 
     async with engine.connect() as conn:
         database_existance = await conn.execute(
             text(
-                f"SELECT 1 FROM pg_database WHERE datname='{settings.db_base}'"  # PostgreSQL
-                if is_postgres_db
-                else f"SHOW DATABASES WHERE `database` = '{settings.db_base}'",  # MySQL
+                (
+                    f"SELECT 1 FROM pg_database WHERE datname='{settings.db_base}'"  # PostgreSQL
+                    if is_postgres_db
+                    else f"SHOW DATABASES WHERE `database` = '{settings.db_base}'"
+                ),  # MySQL
             ),
         )
 

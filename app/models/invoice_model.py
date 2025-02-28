@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Optional
 
 from sqlmodel import Field, Relationship, SQLModel
+from pydantic import validator
 
 from app.models.client_contact_model import ClientContact
 from app.models.invoice_contact_model import InvoiceContact
@@ -14,9 +15,15 @@ from app.models.note_model import Note
 
 
 class InvoiceInput(SQLModel):
-    total_price: float = Field(nullable=False)
-    client_contact_id: int = Field(foreign_key="ClientContact.id")  # fk
-    invoice_contact_id: int = Field(foreign_key="InvoiceContact.id")  # fk
+    total_price: float = Field(nullable=False, gt=0)  # Added validation
+    client_contact_id: int = Field(foreign_key="ClientContact.id", gt=0)
+    invoice_contact_id: int = Field(foreign_key="InvoiceContact.id", gt=0)
+
+    @validator("total_price")
+    def validate_price(cls, v):
+        if v <= 0:
+            raise ValueError("Total price must be greater than zero")
+        return round(v, 2)  # Round to 2 decimal places
 
 
 class InvoiceBase(InvoiceInput):

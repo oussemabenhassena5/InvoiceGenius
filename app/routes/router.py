@@ -7,11 +7,13 @@ from app.routes import (
     invoice_item,
     note,
     super_admin,
+    ai_invoice,
 )
 from app.routes.token import token_router
 
 api_router = APIRouter(prefix="/api")
 api_router.include_router(token_router, tags=["Token"], include_in_schema=False)
+api_router.include_router(ai_invoice.router, prefix="/ai-invoice", tags=["AI Genius Invoice"])
 
 api_router.include_router(super_admin.router, prefix="/super-admin", tags=["Super Admin"])
 api_router.include_router(invoice.router, prefix="/invoice", tags=["Invoice"])

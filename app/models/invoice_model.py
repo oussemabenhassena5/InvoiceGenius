@@ -20,15 +20,16 @@ class InvoiceInput(SQLModel):
 
 
 class InvoiceBase(InvoiceInput):
-    created_at: Optional[datetime] = Field(default=datetime.now(), nullable=False)
-    modified_at: Optional[datetime] = Field(default=datetime.now(), nullable=False)
-    deleted_at: Optional[datetime] = Field(nullable=True)
+    # Make all timestamp fields Optional with default values
+    created_at: Optional[datetime] = Field(default_factory=datetime.now, nullable=False)
+    modified_at: Optional[datetime] = Field(default_factory=datetime.now, nullable=False)
+    deleted_at: Optional[datetime] = Field(default=None, nullable=True)
 
 
 class Invoice(InvoiceBase, table=True):
     __tablename__: str = "Invoice"
 
-    id: Optional[int] = Field(primary_key=True, default=None, nullable=False)
+    id: Optional[int] = Field(default=None, primary_key=True)
 
     client_contact: Optional[ClientContact] = Relationship(
         back_populates="invoices",

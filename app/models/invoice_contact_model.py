@@ -17,14 +17,16 @@ class InvoiceContactInput(SQLModel):
     mobile: str = Field(index=True, min_length=7)
 
 
-class InvoiceContact(InvoiceContactInput, table=True):
+class InvoiceContactBase(InvoiceContactInput):
+    created_at: Optional[datetime] = Field(default_factory=datetime.now, nullable=False)
+    modified_at: Optional[datetime] = Field(default_factory=datetime.now, nullable=False)
+    deleted_at: Optional[datetime] = Field(default=None, nullable=True)
+
+
+class InvoiceContact(InvoiceContactBase, table=True):
     __tablename__: str = "InvoiceContact"
 
     id: Optional[int] = Field(primary_key=True, default=None, nullable=False)
-
-    created_at: Optional[datetime] = Field(default=datetime.now(), nullable=False)
-    modified_at: Optional[datetime] = Field(default=datetime.now(), nullable=False)
-    deleted_at: Optional[datetime] = Field(nullable=True)
 
     invoices: list["Invoice"] = Relationship(
         back_populates="invoice_contact",
@@ -32,9 +34,6 @@ class InvoiceContact(InvoiceContactInput, table=True):
     )  # parent
 
 
-class InvoiceContactWithInvoices(InvoiceContactInput):
+class InvoiceContactWithInvoices(InvoiceContactBase):
     id: int
-    created_at: datetime
-    modified_at: datetime
-    deleted_at: Optional[datetime]
     invoices: list["Invoice"]

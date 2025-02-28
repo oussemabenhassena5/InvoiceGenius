@@ -20,7 +20,7 @@ class ClientContactInput(SQLModel):
 class ClientContactBase(ClientContactInput):
     created_at: Optional[datetime] = Field(default=datetime.now(), nullable=False)
     modified_at: Optional[datetime] = Field(default=datetime.now(), nullable=False)
-    deleted_at: Optional[datetime] = Field(nullable=True)
+    deleted_at: Optional[datetime] = Field(default=None, nullable=True)  # Make sure this is Optional with default=None
 
 
 class ClientContact(ClientContactBase, table=True):

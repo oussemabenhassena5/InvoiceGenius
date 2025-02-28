@@ -8,6 +8,7 @@ from sqlmodel import select
 from app.core.auth import AuthHandler
 from app.models.client_contact_model import ClientContact
 from app.models.invoice_contact_model import InvoiceContact
+from app.models.responses import StandardResponse
 from app.models.invoice_model import Invoice, InvoiceFull, InvoiceInput
 from app.models.note_model import Note
 from app.routes.invoice.invoice_dao import InvoiceDAO
@@ -18,13 +19,13 @@ router = APIRouter()
 
 
 # * POST
-@router.post("/create", response_model=Invoice)
+@router.post("/create", response_model=StandardResponse)
 async def create_invoice(
     inserted_invoice: InvoiceInput,
     invoice_dao: InvoiceDAO = Depends(),
 ):
     invoice = await invoice_dao.insert(inserted_invoice=inserted_invoice)
-    return invoice
+    return StandardResponse(success=True, message="Invoice created successfully", data=invoice)
 
 
 # * GET

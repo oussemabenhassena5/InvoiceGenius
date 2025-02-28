@@ -41,14 +41,23 @@ class InvoiceDAO:
             invoice: Invoice = Invoice.from_orm(inserted_invoice)
             self.session.add(invoice)
             await self.session.commit()
-            print("after commit")
             return invoice
         except exc.IntegrityError as error:
-            print(error.code, error.params)
+            await self.session.rollback()
+            # Improved error message with more details
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "message": "Failed to create invoice due to invalid references",
+                    "client_contact_id": inserted_invoice.client_contact_id,
+                    "invoice_contact_id": inserted_invoice.invoice_contact_id,
+                    "error": str(error),
+                },
+            )
+        except Exception as e:
             await self.session.rollback()
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Client contact id {inserted_invoice.client_contact_id} or/and Invoice contact id {inserted_invoice.invoice_contact_id} not exist",
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error occurred: {str(e)}"
             )
 
     async def update(self, db_invoice: Invoice, updated_invoice: InvoiceInput) -> Invoice:

@@ -1,4 +1,4 @@
-# InvoiceGenius API 🚀
+# InvoiceGenius API 💰
 
 InvoiceGenius is a modern, AI-powered invoice management system built with FastAPI that helps businesses automate their invoice processing workflow.
 
